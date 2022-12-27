@@ -1,41 +1,35 @@
 package com.caffeinecoder.dynamicportfolioapi.resource;
 
 import com.caffeinecoder.dynamicportfolioapi.dataaccess.PortfolioDataAccess;
-import com.caffeinecoder.dynamicportfolioapi.model.Persons;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.caffeinecoder.dynamicportfolioapi.model.Login;
+import com.caffeinecoder.dynamicportfolioapi.model.UserSignUp;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.sql.SQLException;
+import java.util.Map;
 
 
 @RestController
 @RequestMapping(value = "/portfolio")
-public class PortfolioResourceImpl implements PortfolioResource {
-
-
-    @RequestMapping(value="/getallpersons", method = RequestMethod.GET,produces = {MediaType.APPLICATION_JSON_VALUE})
-    @Override
-    public ResponseEntity<String> getAllPersons() throws JSONException, SQLException {
-        PortfolioDataAccess portfolioDataAccess = new PortfolioDataAccess();
-        JSONArray json;
-        json= portfolioDataAccess.fetchAllPersons();
-        System.out.println(json);
-        return new ResponseEntity<String>(json.toString(), HttpStatus.OK);
+public class PortfolioResourceImpl implements PortfolioResource{
+    PortfolioDataAccess portfolioDataAccess = new PortfolioDataAccess();
+    public PortfolioResourceImpl() throws SQLException {
     }
 
-    @RequestMapping(value = "/addPerson",method = RequestMethod.POST)
     @Override
-    public int addPerson(@RequestBody Persons persons) throws SQLException {
-        PortfolioDataAccess portfolioDataAccess = new PortfolioDataAccess();
-        System.out.println("Patient Name "+ persons.toString());
-        return  portfolioDataAccess.addPerson(persons);
+    public Map<String, String> signUp(UserSignUp userSignUp) throws SQLException {
+        Map<String,String> response;
+        portfolioDataAccess = new PortfolioDataAccess();
+        response = portfolioDataAccess.signUp(userSignUp);
+        return response;
+    }
+
+    @Override
+    public Map<String, String> login(Login login) throws SQLException {
+        Map<String,String> response;
+        portfolioDataAccess = new PortfolioDataAccess();
+        response = portfolioDataAccess.verifyLogin(login);
+        return response;
     }
 
 }
